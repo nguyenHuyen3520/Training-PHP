@@ -29,4 +29,9 @@ class UserController
     {
         return $this->userDb->login($username, $password);
     }
+
+    public function getUserInfoWithUsername($username)
+    {
+        return $this->userDb->getUserInfoWithUsername($username);
+    }
 }
