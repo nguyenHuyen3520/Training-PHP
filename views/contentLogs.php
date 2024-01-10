@@ -20,8 +20,10 @@ foreach ($devicesResult as $device) {
 $searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
 $logsInfo = $logController->getAllLogOfDevice($deviceIds, $searchTerm);
 
+
+
 // Pagination
-$itemsPerPage = 2;
+$itemsPerPage = isset($_GET['show']) ? $_GET['show'] : 2;
 $totalItems = count($logsInfo);
 $totalPages = ceil($totalItems / $itemsPerPage);
 
@@ -33,9 +35,10 @@ $searchedDevices = array_slice($logsInfo, $offset, $itemsPerPage);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $searchTerm = isset($_POST['search']) ? $_POST['search'] : '';
+    $show = $_POST['number'] ? $_POST['number'] : 2;
     // Build the URL with the query parameter
     echo $_SERVER['PHP_SELF'];
-    $url = "http://localhost" . $_SERVER['PHP_SELF'] . "?search=" . urlencode($searchTerm) . "&page=logs&p_page=$p_page";
+    $url = "http://localhost" . $_SERVER['PHP_SELF'] . "?search=" . urlencode($searchTerm) . "&page=logs&p_page=$p_page" . "&show=" . $show;
 
     // Redirect to the same page with the search term in the query string
     header("Location: " . $url);
@@ -52,36 +55,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Device List</title>
     <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            background-color: #fff;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        th,
-        td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #4caf50;
-            color: white;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-
         .pagination {
             display: flex;
             justify-content: center;
@@ -125,6 +98,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             border: none;
             color: #fff;
         }
+
+        .table-logs {
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -133,12 +110,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <h2 class="title">
             Action Logs
         </h2>
-        <form method="post" action="">
-            <input type="text" name="search" id="search" value="<?php echo $searchTerm; ?>" placeholder="name">
-            <button type="submit">
-                Search
-            </button>
-        </form>
+        <div style="display: flex;">
+            <form method="post" action="" style="display: flex; align-items:center;">
+                <div style="margin-right: 10px;">
+                    show per page
+                </div>
+                <input type="text" name="number" value="<?php echo $itemsPerPage; ?>" placeholder="number product">
+                <input type="text" name="search" id="search" value="<?php echo $searchTerm; ?>" placeholder="name">
+                <button type="submit">
+                    Search
+                </button>
+            </form>
+        </div>
     </div>
 
     <table>
@@ -159,6 +142,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <td><?php echo $device['date']; ?></td>
                 </tr>
             <?php endforeach; ?>
+            <tr>
+                <td class="table-logs">
+                    Total
+                </td>
+                <td></td>
+                <td></td>
+                <td class="table-logs">
+                    <?php echo $totalItems; ?>
+                </td>
+            </tr>
         </tbody>
     </table>
 

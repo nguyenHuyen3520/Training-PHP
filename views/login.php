@@ -1,5 +1,4 @@
 <?php
-require_once '../helper/User.php';
 
 use Controller\UserController;
 
