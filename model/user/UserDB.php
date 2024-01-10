@@ -13,7 +13,7 @@ class UserDB
 
     public function addUser($user)
     {
-        $sql = "INSERT INTO users (username, firstname, lastname, password)(?,?,?,?)";
+        $sql = "INSERT INTO users (username, firstname, lastname, password) VALUES  (?,?,?,?)";
         $stmt = $this->connect->prepare($sql);
         $newUser = [
             $user->getUserName(),
@@ -54,5 +54,13 @@ class UserDB
         } else {
             return false; // Đăng nhập không thành công
         }
+    }
+
+    public function getUserInfoWithUsername($username)
+    {
+        $stmt = $this->connect->prepare("SELECT * FROM users WHERE username = :username");
+        $stmt->bindParam(':username', $username);
+        $stmt->execute();
+        return $stmt->fetch();
     }
 }

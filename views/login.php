@@ -1,5 +1,4 @@
 <?php
-require_once '../helper/User.php';
 
 use Controller\UserController;
 
@@ -23,6 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $loginError = "Invalid username or password";
     }
 }
+
 ?>
 
 <!DOCTYPE html>
